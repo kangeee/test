@@ -1,0 +1,109 @@
+#日志配置
+logging:
+  level:
+    root: info
+  file:
+    name: springboot.log
+#服务器端口配置
+server:
+  servlet:
+    context-path: /test
+  port: 9003
+#视图解析配置
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+#文件上传配置
+#上传文件总的最大值
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+#数据源配置
+  datasource:
+    name: dataSource
+    url: jdbc:mysql://192.168.1.17:3308/relationship?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    max-wait: 10000
+    max-active: 50
+    max-idle: 10
+    min-idle: 8
+    test-on-borrow: true
+    validation-query: select 1
+#springcloud ailibaba配置
+  application:
+    name: productapp  #应用名称
+  zipkin:
+    base-url: http://192.168.1.17:9411
+    sleuth:
+      sampler:
+        #采样率值介于0~1之间，1表示全部采样
+        probability: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.1.17:8848 #Nacos注册中心地址
+        group: default_tx_group
+    sentinel: #sentinel配置
+      transport:
+        dashboard: 192.168.1.17:8080 #配置控制台地址
+#  elasticsearch:
+#    rest:
+#      uris: http://localhost:9200
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 127.0.0.1:9300
+#开启监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+#OpenFeign配置
+feign:
+  sentinel:
+    enabled: true # 开启feign对sentinel的支持
+ribbon: #设置Feign客户端超时时间（openfeign默认支持ribbon）
+  ReadTimeout: 6000 #处理请求的超时时间
+  ConnectionTimeout: 6000 #连接建立的超时时长
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+mybatis-plus:
+  type-aliases-package: com.model
+  configuration:
+    map-underscore-to-camel-case: true
+#pageHelper分页插件
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+seata:
+  enabled: true
+  # Seata应用编号，默认为 ${spring.application.name}
+  application-id: ${spring.application.name}
+  # Seata事务组编号，用于TC集群名
+  tx-service-group: fsp_tx_group
+  # 关闭自动代理
+  enable-auto-data-source-proxy: true
+  # 服务配置项
+  service:
+    # 虚拟组和分组的映射
+    vgroup-mapping:
+      fsp_tx_group: default
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 192.168.1.17:8848
+      namespace: d3a8cd68-35e1-4a73-9a60-4dee986a9471
+      group: default_tx_group
+#     username: nacos
+#     password: nacos
+#     cluster: default
